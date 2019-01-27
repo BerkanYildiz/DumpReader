@@ -1,0 +1,83 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{572905FC-2CC0-4E35-A689-6F13C1D6F5BC}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>DumpReader</RootNamespace>
+    <AssemblyName>DumpReader</AssemblyName>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <Deterministic>true</Deterministic>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>Builds\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>1</WarningLevel>
+    <LangVersion>latest</LangVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>none</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>Builds\Release\</OutputPath>
+    <DefineConstants>TRACE;RELEASE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>0</WarningLevel>
+    <LangVersion>latest</LangVersion>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Dump.cs" />
+    <Compile Include="Logic\DumpFunction.cs" />
+    <Compile Include="Logic\DumpClass.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Dumps\PUBG_5.1.8.1.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PreBuildEvent>DEL /S "$(TargetDir)*.xml"
+DEL /S "$(TargetDir)*.pdb"
+DEL /S "$(TargetDir)*.ilk"
+DEL /S "$(TargetDir)*.lib"
+DEL /S "$(TargetDir)*.cer"
+DEL /S "$(TargetDir)*.exp"
+DEL /S "$(TargetDir)*.dll"
+DEL /S "$(TargetDir)*.config"</PreBuildEvent>
+  </PropertyGroup>
+  <PropertyGroup>
+    <PostBuildEvent>if "$(ConfigurationName)" == "Release" (
+  Eazfuscator.NET.exe "$(TargetPath)" --msbuild-project-path "$(ProjectPath)" --msbuild-project-configuration "$(ConfigurationName)" --msbuild-project-platform "$(PlatformName)" --msbuild-solution-path "$(SolutionPath)" -n --newline-flush -v 2018.4
+)
+
+DEL /S "$(TargetDir)*.xml"
+DEL /S "$(TargetDir)*.pdb"
+DEL /S "$(TargetDir)*.ilk"
+DEL /S "$(TargetDir)*.lib"
+DEL /S "$(TargetDir)*.cer"
+DEL /S "$(TargetDir)*.exp"
+DEL /S "$(TargetDir)*.config"
+
+if "$(ConfigurationName)" == "Release" (
+  DEL /S "$(TargetDir)*.dll"
+)
+
+if "$(ConfigurationName)" == "Release" (
+  REM enigma64.exe -qe "$(SolutionDir)$(SolutionName).enigma64"
+)</PostBuildEvent>
+  </PropertyGroup>
+</Project>
