@@ -99,14 +99,33 @@
 
             foreach (var Line in this.Raw)
             {
+                if (string.IsNullOrWhiteSpace(Line))
+                {
+                    continue;
+                }
+
+                if (Line[0] != '/')
+                {
+                    continue;
+                }
+
                 var Splits      = Line.Split(' ');
+
+                if (Splits.Length < 2)
+                {
+                    continue;
+                }
+
                 var Type        = Splits[0];
                 var Package     = Splits[1];
-                var Class       = "";
-                var Field       = "";
-                var SubField    = "";
-                var SubType     = "";
+                var Class       = string.Empty;
+                var Field       = string.Empty;
+                var SubField    = string.Empty; 
+                var SubType     = string.Empty;
                 var OffsetStr   = Splits.Last();
+
+                Type            = string.Join(".", Type.Split('.').Skip(1));
+                Package         = Package.Replace("/Script/", string.Empty);
 
                 switch (Type)
                 {
@@ -134,7 +153,7 @@
 
                     default:
                     {
-                        Splits = Package.Split('.');
+                        Splits = Package.Split('.', ':');
                         Package = Splits[0];
                         Class = Splits[1];
 
